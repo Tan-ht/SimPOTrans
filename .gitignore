@@ -1,0 +1,78 @@
+
+# Python
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+src/*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments and local tooling
+.venv/
+.comet-venv/
+.cosyvoice-venv/
+.metricx-venv/
+.uv-cache/
+venv/
+env/
+.env
+.env.*
+!.env.example
+
+# Build artifacts
+build/
+dist/
+*.whl
+*.tar.gz
+
+# Training data and outputs
+data
+data/
+tests/
+checkpoints/*
+!checkpoints/.gitkeep
+outputs/
+exp_results/
+demo_metrics.jsonl
+runs/
+wandb/
+lightning_logs/
+tensorboard/
+*.ckpt
+*.pt
+*.pth
+*.safetensors
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+*.swo
+.DS_Store
+
+# Hugging Face / model caches if created locally
+.cache/
+cache/
+hf_cache/
+pretrained/
+
+# External project generated files
+MetricX/
+third_party/MAGIC-TTS/*.egg-info/
+third_party/MAGIC-TTS/magictts.egg-info/
+
+# Fetched upstream repositories and private runtime inputs
+third_party/MAGIC-TTS/
+third_party/awesome-align/
+third_party/CosyVoice/
+OmniSTEval/
+src/tts/prompt/
+*.wav
+*.mp3
+*.flac

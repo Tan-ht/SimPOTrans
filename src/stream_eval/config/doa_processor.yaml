@@ -1,0 +1,30 @@
+type: stream_eval.processor.doa_processor.DOAChunkProcessor
+speech_chunk_size: 2.0
+# Decoder-Only Attention policy cutoff in SimPOTrans speech-embedding frames.
+doa_cutoff_frames: 15
+# By default use layer 15, which showed clearer monotonic speech attention than all-layer averaging.
+# Set doa_layers to null/all to average all available decoder layers.
+doa_layers: 15
+# null averages all available attention heads.
+doa_heads: null
+# Needed for models whose flash/sdpa implementation does not expose attentions.
+doa_force_eager_attention: true
+# Fixed-prefix DOA keeps full speech context plus committed assistant prefix.
+# Terminal punctuation prunes committed text/audio only after the soft limit.
+soft_speech_context_reset_seconds: 20.0
+# Hard context reset limit; old context is force-written before reset.
+max_speech_context_seconds: 30.0
+device: cuda
+source_language: en
+target_language: zh
+model_config: src/st_backbone/config.yaml
+checkpoint: null
+decode:
+  max_new_tokens: 32
+  do_sample: false
+  beam_num: 4
+  temperature: 0.0
+  top_p: null
+  top_k: null
+  repetition_penalty: 1.2
+  no_repeat_ngram_size: 4

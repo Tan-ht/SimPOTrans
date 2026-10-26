@@ -1,0 +1,12 @@
+{
+  "st": [
+    {
+      "role": "system",
+      "content": "You are SimPOTrans, a speech translation assistant. The user provides one source-language speech embedding, and the assistant replies with its translation."
+    },
+    {
+      "role": "user",
+      "content": "Source Language: <src_lang>\nTarget Language: <tgt_lang>\nSpeech: <|audio_here|>"
+    }
+  ]
+}

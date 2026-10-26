@@ -1,0 +1,35 @@
+hostname: localhost
+ws_port: 8080
+audio_ws_port: 8081
+http_port: 7860
+single_origin_websockets: false
+single_origin_ws_path: /ws
+single_origin_audio_ws_path: /tts-audio
+secure: false
+pool_size: 1
+acquire_timeout: 30
+web_directory: demo/web
+
+metrics:
+  enabled: false
+  filename: demo/demo_metrics.jsonl
+
+webui:
+  model_name: Real-time S2ST
+  # Batch browser microphone audio into ~100 ms WebSocket packets to reduce small-packet queuing over high-latency links.
+  batch_audio_100ms: true
+  ws_hostname: localhost
+  ws_port: 8080
+  audio_ws_port: 8081
+  secure: false
+  tgt_supported_langs:
+    - de: "German"
+    - zh: "Chinese"
+    - ja: "Japanese"
+    - en: "English"
+  src_supported_langs:
+    - en: "English"
+    - ja: "Japanese"
+    - es: "Spanish"
+    - de: "German"
+    - fr: "French"

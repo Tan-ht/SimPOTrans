@@ -1,0 +1,27 @@
+type: stream_eval.processor.simulsense_processor.SimulSenseChunkProcessor
+speech_chunk_size: 1.0
+# Hard limit for accumulated speech audio before resetting speech context and LLM KV cache.
+max_speech_context_seconds: 30.0
+# Reset speech context and LLM KV cache after this limit when a non-empty translation ends with terminal punctuation.
+soft_speech_context_reset_seconds: 20.0
+# Speech-buffer retention policy; currently only fixed_duration is supported.
+context_retention_policy: fixed_duration
+# Force a generation attempt after this many seconds of uncommitted speech.
+max_wait_duration: 6.0
+device: cuda
+source_language: en
+target_language: zh
+model_config: src/st_backbone/config.yaml
+checkpoint: null
+simulsense_path: checkpoints/simulsense
+threshold: 1.45
+decode:
+  max_new_tokens: 128
+  do_sample: false
+  beam_num: 4
+  temperature: 0.0
+  top_p: null
+  top_k: null
+  repetition_penalty: 1.2
+  no_repeat_ngram_size: 4
+  seed: 0

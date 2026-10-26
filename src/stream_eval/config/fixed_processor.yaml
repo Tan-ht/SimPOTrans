@@ -1,0 +1,29 @@
+type: stream_eval.processor.fixed_processor_dialogue.SimPOTransChunkProcessor
+speech_chunk_size: 0.3
+# History selection policy for fixed_dialogue evaluation.
+# soft: reset after soft_speech_context_reset_seconds when punctuation appears.
+# punctuation: reset whenever terminal punctuation appears.
+# fixed: reset after fixed_history_words committed target units.
+# kv: keep system + latest llm_context_turns turns, with raw-KV patch enabled by script.
+history_selection_policy: soft
+# Max accumulated speech audio before resetting the speech buffer.
+max_speech_context_seconds: 30.0
+soft_speech_context_reset_seconds: 20.0
+fixed_history_words: 100
+speech_context_policy: fixed_duration
+llm_raw_kv_cache: false
+llm_context_turns: null
+device: cuda
+source_language: en
+target_language: zh
+model_config: src/st_backbone/config.yaml
+checkpoint: null
+decode:
+  max_new_tokens: 128
+  do_sample: false
+  beam_num: 4
+  temperature: 0.0
+  top_p: null
+  top_k: null
+  repetition_penalty: 1.2
+  no_repeat_ngram_size: 4

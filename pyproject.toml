@@ -1,0 +1,49 @@
+[project]
+name = "simpotrans"
+version = "0.1.0"
+description = "Research code for streaming speech translation training, evaluation, and demo workflows."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+dependencies = [
+    "fairseq2>=0.8.1",
+    "magictts",
+    "awesome-align",
+    "huggingface-hub",
+    "openai_whisper",
+    "peft>=0.19.1",
+    "sacrebleu[ja]>=2.6.0",
+    "torchaudio==2.9.1",
+    "torchcodec>=0.11.1",
+    "simulstream>=0.3.0",
+    "mweralign>=1.0.1",
+    "simuleval==1.1.4",
+    "whisper-rt-streaming",
+    "pytorch-lightning>=2.5.0",
+    "soundfile>=0.13.0",
+    "scipy>=1.15.3",
+    "spacy[ja]>=3.8.0",
+    "transformers>=4.57.0",
+    "silero-vad>=6.0.0",
+    "pytest>=9.0.3",
+    "fugashi>=1.5.2",
+    "unidic-lite>=1.0.8",
+]
+
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+st_backbone = ["*.yaml", "*.json"]
+rl_post = ["*.yaml"]
+stream_eval = ["config/*.yaml"]
+
+[tool.uv.sources]
+magictts = { path = "third_party/MAGIC-TTS", editable = true }
+awesome-align = { path = "third_party/awesome-align", editable = true }
+whisper-rt-streaming = { path = "third_party/WhisperRT-Streaming", editable = true }

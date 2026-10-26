@@ -1,0 +1,17 @@
+type: stream_eval.processor.fixed_processor_prefix.SimPOTransChunkProcessor
+speech_chunk_size: 0.3
+max_speech_context_seconds: 30.0
+device: cuda
+source_language: en
+target_language: zh
+model_config: src/st_backbone/config.yaml
+checkpoint: null
+decode:
+  max_new_tokens: 128
+  do_sample: false
+  beam_num: 4
+  temperature: 0.0
+  top_p: null
+  top_k: null
+  repetition_penalty: 1.2
+  no_repeat_ngram_size: 4

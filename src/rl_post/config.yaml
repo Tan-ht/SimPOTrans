@@ -1,0 +1,111 @@
+# GRPO post-training for the SFT SimPOTrans backbone on CoVoST-style manifests.
+# Copy this file and override paths/checkpoints for an actual run.
+
+model:
+  config_path: src/st_backbone/config.yaml
+  checkpoint: null
+  device: cuda
+  dtype: bfloat16
+
+dataset:
+  manifest_root: /path/to/covost/en-de
+  audio_root: /path/to/covost/en-de
+  manifest_format: auto
+  manifest_list: null
+  splits: train_st
+  default_train_split: train_st
+  default_valid_split: dev_st
+  sampling_alpha: 0.5
+  sampling_unit: lang_pair
+  sample_rate: 16000
+  filter_min_len: 2.0
+  max_source_frames: 200000
+  max_sentences_per_lang_pair: null
+
+rollout:
+  # Fixed streaming chunk size requested by the user.
+  chunk_size_seconds: 2.0
+  group_size: 6
+  # Maximum number of source utterances per rollout step.
+  batch_size: 4
+  # Dynamic rollout batch budget, analogous to SFT MAX_NUM_FRAMES_PER_BATCH.
+  max_source_frames_per_batch: 200000
+  # Total optimizer update steps. Each rollout can consume up to grpo.update_epochs of these.
+  max_steps: 4000
+  max_new_tokens: 24
+  temperature: 0.7
+  top_p: 0.95
+  top_k: null
+  seed: 0
+
+reward:
+  scorer: xcomet
+  # Set scorer: composite, or use train_stream_grpo.sh reward toggles, to add
+  # monotonicity/repetition/eos shaping rewards during streaming RL training.
+  # Validation and best-checkpoint selection still use XCOMET only.
+  comet_weight: 1.0
+  monotonicity_coef: 0.2
+  monotonicity_threshold: 0.9
+  repetition_coef: 0.05
+  eos_bonus_coef: 0.05
+  validation_scorer: xcomet
+  best_model_metric: xcomet
+  monotonicity_enabled: false
+  repetition_enabled: false
+  eos_bonus_enabled: false
+  monotonicity_invalid_value: 0.5
+  comet_model: Unbabel/XCOMET-XL
+  comet_python: .comet-venv/bin/python
+  # Put XCOMET on a dedicated GPU, for example "1" while GRPO uses cuda:0.
+  comet_visible_devices: null
+  comet_batch_size: 4
+  # Split large validation/reward requests sent to the persistent XCOMET process.
+  comet_request_size: 128
+  comet_gpus: 1
+  repetition_threshold: 0.65
+
+grpo:
+  # Reuse each rollout batch for 10 optimizer updates.
+  update_epochs: 10
+  logprob_micro_batch_size: 2
+  clip_range: 0.2
+  kl_coef: 0.02
+  reference_model: true
+  advantage_eps: 1.0e-6
+
+optimizer:
+  lr: 1.0e-6
+  betas: [0.9, 0.95]
+  weight_decay: 0.01
+  max_grad_norm: 1.0
+
+validation:
+  enabled: true
+  splits: dev_st
+  every_steps: 500
+  at_start: false
+  num_samples: 1000
+  max_sentences_per_lang_pair: null
+  do_sample: false
+  beam_num: 1
+  max_new_tokens: 24
+
+wandb:
+  enabled: false
+  entity: null
+  project: SimPOTrans
+  run_id: null
+  run_name: null
+  group: null
+  job_type: rl_post
+  resume: allow
+
+output:
+  dir: checkpoints/rl_post/grpo_streaming
+  # Fairseq2-style checkpoint resume. allow: resume if found; never: ignore; require: error if missing.
+  resume_mode: allow
+  resume_from: null
+  save_every_steps: 500
+  log_every_steps: 1
+  progress_bar: true
+

@@ -1,0 +1,17 @@
+[
+  {
+    "path": "third_party/MAGIC-TTS",
+    "url": "https://github.com/yongaifadian1/MAGIC-TTS.git",
+    "revision": "17b4d2745c46926b2741ea7afb523254375fb24c"
+  },
+  {
+    "path": "third_party/awesome-align",
+    "url": "https://github.com/neulab/awesome-align.git",
+    "revision": "5f150d45bbe51e167daf0a84abebaeb07c3323d1"
+  },
+  {
+    "path": "third_party/CosyVoice",
+    "url": "https://github.com/FunAudioLLM/CosyVoice.git",
+    "revision": "074ca6dc9e80a2f424f1f74b48bdd7d3fea531cc"
+  }
+]

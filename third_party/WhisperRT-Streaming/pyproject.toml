@@ -1,0 +1,28 @@
+[project]
+name = "whisper-rt-streaming"
+version = "0.0.0"
+description = "Vendored runtime package for tomer9080/WhisperRT-Streaming."
+readme = "README.md"
+requires-python = ">=3.9"
+license = "CC-BY-NC-4.0"
+dependencies = [
+    "huggingface-hub",
+    "more-itertools",
+    "numba",
+    "numpy",
+    "openai-whisper",
+    "pytorch-lightning",
+    "regex",
+    "soundfile",
+    "tiktoken",
+    "torch",
+    "tqdm",
+    "triton",
+]
+
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]

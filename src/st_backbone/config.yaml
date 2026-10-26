@@ -1,0 +1,145 @@
+model:
+  family: llm_sst
+  arch: speech_to_text_base
+  dtype: bfloat16
+  config_overrides:
+    src_lang: en
+    tgt_lang: de
+    # Speech encoder backend: OpenAI Whisper encoder.
+    speech_encoder_backend: whisper
+    whisper_model: large-v3
+    llm_path: Qwen/Qwen3-8B
+    prompt_path: src/st_backbone/st_prompt.json
+    decode_config_path: null
+    freeze_encoder: true
+    sample_rate: 16000
+    num_projection_layers: 2
+    torch_dtype: bfloat16
+    low_cpu_mem_usage: true
+    lora:
+      rank: 16
+      alpha: 32
+      dropout: 0.0
+      target_modules: [q_proj, k_proj, v_proj]
+      inference_mode: false
+    decode:
+      max_new_tokens: 128
+      do_sample: false
+      beam_num: 1
+      top_p: null
+      top_k: null
+      temperature: 0.0
+      repetition_penalty: 1.2
+      no_repeat_ngram_size: 4
+      min_length: 1
+      seed: 42
+
+dataset:
+  family: st_train
+  config_overrides:
+    # Directory containing split manifests such as train_st.tsv/dev_st.tsv or train.jsonl/dev.jsonl.
+    manifest_root: /path/to/data/en-de
+    # If audio paths in manifests are relative, they are resolved under audio_root.
+    audio_root: /path/to/data/en-de
+    # auto checks both TSV and JSONL. Set jsonl for MuST-C-style manifests.
+    manifest_format: auto
+    # For multilingual training, point this to a TSV source list with columns:
+    # dataset, src_lang, tgt_lang, manifest_root, audio_root, train_split, valid_split, manifest_format.
+    manifest_list: null
+    splits: train_st
+    default_train_split: train_st
+    default_valid_split: dev_st
+    sampling_alpha: 1.0
+    sampling_unit: lang_pair
+    epoch_size: null
+    sample_rate: 16000
+    filter_min_len: 0.0
+    max_source_frames: 200000
+    max_num_frames_per_batch: 400000
+    shuffle_window: 10000
+    batch_size: 15
+    prefetch: 4
+
+recipe:
+  seed: 0
+  num_accumulate: 1
+  valid_splits: valid
+  max_validation_sentences_per_lang_pair: null
+  max_bleu_batches: null
+  max_bleu_sentences_per_lang_pair: null
+  compute_comet: false
+  comet_model: Unbabel/XCOMET-XL
+  comet_batch_size: 2
+  comet_gpus: 1
+  comet_python: .comet-venv/bin/python
+  log_example_batches: 1
+  early_stop_patience: 10
+  early_stop_min_delta: 0.0
+  early_stop_higher_better: true
+
+gang:
+  tensor_parallel_size: 1
+  timeout: 15
+  high_priority: true
+
+trainer:
+  data_parallelism: ddp
+  mixed_precision:
+    mode: static
+    dtype: bfloat16
+  grad_accumulation:
+    num_batches: 1
+    no_sync: false
+  max_grad_norm: 1.0
+  gc_every_n_steps: 1000
+  grad_check: false
+  anomaly_detection: false
+
+optimizer:
+  name: adamw
+  config:
+    lr: 1e-4
+    betas: [0.9, 0.98]
+    eps: 1e-8
+    weight_decay: 0.05
+    impl: auto
+
+lr_scheduler:
+  name: myle
+  config:
+    num_warmup_steps: 5000
+    start_lr: 2e-6
+
+regime:
+  num_steps: 300000
+  num_data_epochs: 10
+  validate_at_start: false
+  validate_after_n_steps: 0
+  validate_every_n_steps: &validate_checkpoint_every_n_steps 2000
+  score_metric: bleu
+  checkpoint_after_n_steps: 0
+  checkpoint_every_n_steps: *validate_checkpoint_every_n_steps
+  save_model_only: false
+  keep_last_n_checkpoints: null
+  keep_best_n_checkpoints: 10
+  keep_checkpoint_every_n_steps: null
+  publish_metrics_after_n_steps: 1
+  publish_metrics_every_n_steps: 100
+
+common:
+  seed: 0
+  debug: false
+  cluster: auto
+  no_sweep_dir: false
+  metric_recorders:
+    tensorboard:
+      enabled: false
+    wandb:
+      enabled: false
+      entity: null
+      project: SimPOTrans
+      run_id: persistent
+      run_name: null
+      group: null
+      job_type: train
+      resume_mode: allow
